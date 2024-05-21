@@ -12,6 +12,7 @@
 //
 
 import SwiftUI
+import SwiftData
 
 @main
 struct ChallangeStarterPackApp: App {
@@ -19,5 +20,6 @@ struct ChallangeStarterPackApp: App {
         WindowGroup {
             ContentView()
         }
+        .modelContainer(for: StatusModel.self) // Init Swift Data
     }
 }

@@ -6,12 +6,52 @@
 //
 
 import SwiftUI
+import SwiftData
+
 
 struct HomeView: View {
+    // Setup Swift Data
+    @Environment(\.modelContext) private var modelContext
+    
+    // Query Data Status
+    @Query private var status: [StatusModel]
+    
+    // State untuk Bottom Sheet
+    @State private var showNewStatus = false
+    
     var body: some View {
         NavigationStack{
-            Text("Ini adalah Screen Home")
-                .navigationTitle("Home")
+            List{
+                ForEach(status) { _status in
+                    Text(_status.status) // Menampilkan Status
+                        .swipeActions { // Swipe Action
+                            Button(role: .destructive) {
+                                withAnimation {
+                                    // Delete Swift Data
+                                    modelContext.delete(_status)
+                                }
+                            } label: {
+                                Label("Delete", systemImage: "trash.fill")
+                            }
+                        }
+                }
+            }
+            .navigationTitle("Home")
+            .toolbar {
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button("New Status") {
+                        showNewStatus.toggle() // Mengganti State
+                    }
+                }
+            }
+            .sheet(
+                isPresented: $showNewStatus,
+                content: {
+                    NavigationStack {
+                        NewStatusView() // Menampilkan Bottom Sheet
+                    }
+                }
+            )
         }
     }
 }
